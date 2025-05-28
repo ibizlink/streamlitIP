@@ -1,2 +1,6 @@
-.streamlit/secrets.tomlst
+# Python
 __pycache__/
+*.py[cod]
+
+# Streamlit secrets
+.streamlit/secrets.toml
