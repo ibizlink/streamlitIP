@@ -1,9 +1,5 @@
 import streamlit as st
-from utils.auth_utils import (
-    init_authenticator,
-    check_auth_and_redirect,
-    load_and_sync_localstorage
-)
+
 st.set_page_config(page_title="📊 Dashboard")
 
 
