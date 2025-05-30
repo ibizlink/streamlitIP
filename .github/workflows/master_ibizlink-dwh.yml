@@ -36,6 +36,8 @@ jobs:
           echo "Found output.tar.gz, extracting..."
           tar -xzf output.tar.gz
           rm output.tar.gz
+          echo "Extraction complete. Listing files:"
+          ls -l
         else
           echo "No output.tar.gz found, skipping extraction."
         fi
