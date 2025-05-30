@@ -9,6 +9,7 @@ database = st.secrets["database"]["SQL_DB"]
 username = st.secrets["database"]["SQL_UID"]
 password = st.secrets["database"]["SQL_PWD"]
 
+
 def get_hub_connection():
     return pyodbc.connect(f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')
 
