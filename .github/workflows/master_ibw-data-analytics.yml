@@ -64,18 +64,11 @@ jobs:
       - name: Unzip artifact for deployment
         run: unzip release.zip
 
-      
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_13FDF20A3DAA42098257DCFCBB47A31C }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_4D453A74B2F94B6E867756101AC50413 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_C5646A18D0E94E71AFFC0854D82A987E }}
-
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
         with:
           app-name: 'ibw-data-analytics'
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          package: .
           slot-name: 'Production'
           
