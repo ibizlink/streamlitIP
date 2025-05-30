@@ -4,3 +4,5 @@ streamlit_js_eval
 bcrypt
 pyodbc
 Authlib
+pandas
+st_aggrid

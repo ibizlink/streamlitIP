@@ -119,10 +119,10 @@ st.markdown('<div style="margin-bottom: 42px;"></div>', unsafe_allow_html=True)
 # Navigation Buttons
 col1, col2, col3 = st.columns(3)
 with col1:
-    if st.button("Dashboard", key="dashboard_btn", use_container_width=True):
-        st.switch_page("pages/dashboard.py")
+    if st.button("Sales Report", key="sales_report_btn", use_container_width=True):
+        st.switch_page("pages/salesreport.py")
 with col2:
-    if st.button("Reports", key="reports_btn", use_container_width=True):
+    if st.button("Date Range", key="reports_btn", use_container_width=True):
         st.switch_page("pages/reports.py")
 with col3:
     if st.button("Settings", key="settings_btn", use_container_width=True):
