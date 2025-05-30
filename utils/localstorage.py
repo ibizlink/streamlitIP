@@ -14,3 +14,6 @@ def save_to_localstorage():
                 localStorage.setItem('target_database', '{st.session_state["target_database"]}');
             """
             streamlit_js_eval(js_expressions=js_code, key="save_to_local")
+
+
+            
