@@ -29,6 +29,17 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    # --- Extract output.tar.gz if it exists ---
+    - name: Extract output.tar.gz if present
+      run: |
+        if [ -f output.tar.gz ]; then
+          echo "Found output.tar.gz, extracting..."
+          tar -xzf output.tar.gz
+          rm output.tar.gz
+        else
+          echo "No output.tar.gz found, skipping extraction."
+        fi
+        
     - name: 'Deploy to Azure Web App'
       uses: azure/webapps-deploy@v3
       with:
