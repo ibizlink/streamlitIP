@@ -4,14 +4,18 @@ from utils.db import fetch_domains
 from streamlit_js_eval import streamlit_js_eval
 import os
 
-def get_secret(env_key, secrets_section, secrets_key):
-    # 1. 환경 변수 우선
+def get_secret(env_key, secrets_section=None, secrets_key=None):
     value = os.environ.get(env_key)
     if value:
         return value
-    # 2. secrets.toml에서 읽기
     try:
-        return st.secrets[secrets_section][secrets_key]
+        import streamlit as st
+        if secrets_section and secrets_key:
+            return st.secrets[secrets_section][secrets_key]
+        elif secrets_section:
+            return st.secrets[secrets_section]
+        else:
+            return st.secrets[env_key]
     except Exception:
         return None
 
