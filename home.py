@@ -10,6 +10,7 @@ st.set_page_config(
     layout="centered"
 )
 
+
 # --- Custom Styles ---
 def inject_styles():
     st.markdown("""
