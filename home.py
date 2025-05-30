@@ -4,11 +4,31 @@ from utils.db import fetch_domains
 from streamlit_js_eval import streamlit_js_eval
 import os
 
-redirect_uri = os.environ.get("AUTH_REDIRECT_URI") or st.secrets["auth"]["redirect_uri"]
-cookie_secret = os.environ.get("AUTH_COOKIE_SECRET") or st.secrets["auth"]["cookie_secret"]
-client_id = os.environ.get("AUTH_CLIENT_ID") or st.secrets["auth"]["client_id"]
-client_secret = os.environ.get("AUTH_CLIENT_SECRET") or st.secrets["auth"]["client_secret"]
-server_metadata_url = os.environ.get("AUTH_SERVER_METADATA_URL") or st.secrets["auth"]["server_metadata_url"]
+def get_secret(key, section=None):
+    # 1. 환경 변수 우선
+    value = os.environ.get(key)
+    if value:
+        return value
+    # 2. st.secrets에서 읽기 (파일이 없을 수도 있음)
+    try:
+        if section:
+            return st.secrets[section][key.lower()]
+        else:
+            return st.secrets[key.lower()]
+    except Exception:
+        return None
+
+redirect_uri = get_secret("AUTH_REDIRECT_URI", "auth")
+cookie_secret = get_secret("AUTH_COOKIE_SECRET", "auth")
+client_id = get_secret("AUTH_CLIENT_ID", "auth")
+client_secret = get_secret("AUTH_CLIENT_SECRET", "auth")
+server_metadata_url = get_secret("AUTH_SERVER_METADATA_URL", "auth")
+
+# redirect_uri = os.environ.get("AUTH_REDIRECT_URI") or st.secrets["auth"]["redirect_uri"]
+# cookie_secret = os.environ.get("AUTH_COOKIE_SECRET") or st.secrets["auth"]["cookie_secret"]
+# client_id = os.environ.get("AUTH_CLIENT_ID") or st.secrets["auth"]["client_id"]
+# client_secret = os.environ.get("AUTH_CLIENT_SECRET") or st.secrets["auth"]["client_secret"]
+# server_metadata_url = os.environ.get("AUTH_SERVER_METADATA_URL") or st.secrets["auth"]["server_metadata_url"]
 
 # --- Page Config ---
 st.set_page_config(
