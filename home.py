@@ -2,6 +2,24 @@ import streamlit as st
 import base64
 from utils.db import fetch_domains
 from streamlit_js_eval import streamlit_js_eval
+import os
+
+def get_secret(env_key, secrets_section, secrets_key):
+    # 1. 환경 변수 우선
+    value = os.environ.get(env_key)
+    if value:
+        return value
+    # 2. secrets.toml에서 읽기
+    try:
+        return st.secrets[secrets_section][secrets_key]
+    except Exception:
+        return None
+
+redirect_uri        = get_secret("AUTH_REDIRECT_URI",        "auth", "redirect_uri")
+cookie_secret       = get_secret("AUTH_COOKIE_SECRET",       "auth", "cookie_secret")
+client_id           = get_secret("AUTH_CLIENT_ID",           "auth", "client_id")
+client_secret       = get_secret("AUTH_CLIENT_SECRET",       "auth", "client_secret")
+server_metadata_url = get_secret("AUTH_SERVER_METADATA_URL", "auth", "server_metadata_url")
 
 # --- Page Config ---
 st.set_page_config(
@@ -46,7 +64,8 @@ def show_logo(margin_bottom="4rem"):
 
 
 # --- 1. 로그인 전: 안내/소개 페이지 ---
-if not st.user.is_logged_in:
+if not getattr(st.user, "is_logged_in", False):
+    # 로그인 상태
     show_logo()
     # 타이틀 및 설명
     st.markdown(
@@ -79,8 +98,15 @@ if not st.user.is_logged_in:
     with col1:
         st.markdown('<div style="margin-bottom: 32px;"></div>', unsafe_allow_html=True)
         if st.button("🔐 Login With Google", key="login_btn", use_container_width=True):
-            user = st.login()
+            user = st.login(
+                client_id=client_id,
+                client_secret=client_secret,
+                redirect_uri=redirect_uri,
+                server_metadata_url=server_metadata_url,
+                cookie_secret=cookie_secret
+            )
         st.stop()
+
 
 
 st.session_state.user_email = st.user.email
