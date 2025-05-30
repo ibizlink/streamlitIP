@@ -4,10 +4,10 @@ import pyodbc
 import pandas as pd
 
 # Get credentials from secrets.toml
-server = st.secrets["database"]["SQL_SERVER"]
-database = st.secrets["database"]["SQL_DB"]
-username = st.secrets["database"]["SQL_UID"]
-password = st.secrets["database"]["SQL_PWD"]
+server = st.secrets["database"]["SQL_SERVER"] or os.environ.get("SQL_SERVER")
+database = st.secrets["database"]["SQL_DB"] or os.environ.get("SQL_DB")
+username = st.secrets["database"]["SQL_UID"] or os.environ.get("SQL_UID")
+password = st.secrets["database"]["SQL_PWD"] or os.environ.get("SQL_PWD")
 
 def get_hub_connection():
     return pyodbc.connect(f'DRIVER={{ODBC Driver 17 for SQL Server}};SERVER={server};DATABASE={database};UID={username};PWD={password}')

@@ -2,6 +2,13 @@ import streamlit as st
 import base64
 from utils.db import fetch_domains
 from streamlit_js_eval import streamlit_js_eval
+import os
+
+redirect_uri = os.environ.get("AUTH_REDIRECT_URI") or st.secrets["auth"]["redirect_uri"]
+cookie_secret = os.environ.get("AUTH_COOKIE_SECRET") or st.secrets["auth"]["cookie_secret"]
+client_id = os.environ.get("AUTH_CLIENT_ID") or st.secrets["auth"]["client_id"]
+client_secret = os.environ.get("AUTH_CLIENT_SECRET") or st.secrets["auth"]["client_secret"]
+server_metadata_url = os.environ.get("AUTH_SERVER_METADATA_URL") or st.secrets["auth"]["server_metadata_url"]
 
 # --- Page Config ---
 st.set_page_config(
@@ -78,7 +85,13 @@ if not st.user.is_logged_in:
     with col1:
         st.markdown('<div style="margin-bottom: 32px;"></div>', unsafe_allow_html=True)
         if st.button("🔐 Login With Google", key="login_btn", use_container_width=True):
-            user = st.login()
+            user = st.login(
+                client_id=client_id,
+                client_secret=client_secret,
+                redirect_uri=redirect_uri,
+                server_metadata_url=server_metadata_url,
+                cookie_secret=cookie_secret
+            )
         st.stop()
 
 
