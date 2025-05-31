@@ -1,3 +1,6 @@
+[secrets]
+files = ["/home/site/wwwroot/.streamlit/secrets.toml"]
+
 [theme]
 primaryColor="#4CAF50"
 backgroundColor="#ffffff"
