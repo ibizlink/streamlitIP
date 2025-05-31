@@ -32,12 +32,14 @@ def runquery_raw(start_date, end_date):
             SC.card_code,
             SC.card_name,
             ISNULL(D.order_qty,0) as order_qty,
-            ISNULL(D.subtotal_amount,0) as subtotal_amount
+            ISNULL(D.subtotal_amount,0) * ISNULL(FX.exchange_rate,0) AS subtotal_amount
         FROM ibizlink.sales_details D WITH(NOLOCK)
         INNER JOIN ibizlink.sales_masters M WITH(NOLOCK) ON D.tran_id = M.tran_id
         INNER JOIN ibizlink.inventory_items II WITH(NOLOCK) ON D.item_id = II.item_id
         INNER JOIN ibizlink.sales_cards SC WITH(NOLOCK) ON M.card_id = SC.card_id
         LEFT JOIN ibizlink.core_item_brands IB WITH(NOLOCK) ON II.item_brand_id = IB.item_brand_id
+		INNER JOIN [ibizlink].[vwDaily_exchange_rates] FX
+					ON M.tran_date = FX.[CalendarDate] AND M.currency_id = FX.[foreign_currency_id]
         WHERE
             ISNULL(M.line_del,0) = 0 
             AND ISNULL(M.status_id,0) > 30
@@ -174,3 +176,91 @@ def highlight_total_row(row):
         return ['font-weight: 900; font-size:20px; background-color: #d0e7ff; color: #003366'] * len(row)
     else:
         return [''] * len(row)
+    
+
+def show_items_with_images(df_display):
+    # HTML 테이블 시작
+    table_html = """
+    <style>
+        .stImage img {border-radius: 6px;}
+        table {width: 100%; border-collapse: collapse;}
+        th, td {padding: 6px 8px; text-align: center; border-bottom: 1px solid #ddd;}
+        th {background: #444; color: #fff;}
+        tr:nth-child(even) {background: #2d2d2d;}
+        tr:nth-child(odd) {background: #222;}
+    </style>
+    <table>
+        <tr>
+            <th>Image</th>
+            <th>Item Code</th>
+            <th>Item Name</th>
+            <th>Order Qty</th>
+            <th>Subtotal</th>
+        </tr>
+    """
+
+    for _, row in df_display.iterrows():
+        if row['Image'] == 'TOTAL':
+            table_html += f"""
+            <tr>
+                <td><b>TOTAL</b></td>
+                <td></td>
+                <td></td>
+                <td><b>{row['Order Qty']}</b></td>
+                <td><b>{row['Subtotal']}</b></td>
+            </tr>
+            """
+        else:
+            table_html += f"""
+            <tr>
+                <td><img src="{row['Image']}" width="60"></td>
+                <td>{row['Item Code']}</td>
+                <td>{row['Item Name']}</td>
+                <td>{row['Order Qty']}</td>
+                <td>{row['Subtotal']}</td>
+            </tr>
+            """
+    table_html += "</table>"
+
+    st.markdown(table_html, unsafe_allow_html=True)
+
+def process_trends_data(trend_start, trend_end, group_col,selected_item_ids,selected_customer_ids):
+    item_filter = ""
+    if selected_item_ids:
+        item_id_list = ",".join([f"'{iid}'" for iid in selected_item_ids])
+        item_filter = f"AND II.item_id IN ({item_id_list})"
+
+    customer_filter = ""
+    if selected_customer_ids:
+        customer_id_list = ",".join([f"'{cid}'" for cid in selected_customer_ids])
+        customer_filter = f"AND SC.card_id IN ({customer_id_list})"
+    else:
+        customer_filter = ""
+
+    trend_query = f"""
+        SELECT
+            {group_col} AS period,
+            SUM(ISNULL(D.order_qty,0)) as order_qty,
+            SUM(ISNULL(D.subtotal_amount,0) * ISNULL(FX.exchange_rate,0)) AS subtotal_amount
+        FROM ibizlink.sales_details D WITH(NOLOCK)
+        INNER JOIN ibizlink.sales_masters M WITH(NOLOCK) ON D.tran_id = M.tran_id
+        INNER JOIN ibizlink.inventory_items II WITH(NOLOCK) ON D.item_id = II.item_id
+        INNER JOIN ibizlink.sales_cards SC WITH(NOLOCK) ON M.card_id = SC.card_id
+        LEFT JOIN ibizlink.core_item_brands IB WITH(NOLOCK) ON II.item_brand_id = IB.item_brand_id
+        INNER JOIN [ibizlink].[vwDaily_exchange_rates] FX
+            ON M.tran_date = FX.[CalendarDate] AND M.currency_id = FX.[foreign_currency_id]
+        WHERE
+            ISNULL(M.line_del,0) = 0 
+            AND ISNULL(M.status_id,0) > 30
+            AND M.tran_date BETWEEN '{trend_start}' AND '{trend_end}'
+            {item_filter}
+            {customer_filter}
+        GROUP BY {group_col}
+        ORDER BY {group_col}
+    """
+    
+    # 쿼리 실행
+    conn = get_db_connection()
+    trend_df = pd.read_sql(trend_query, conn)
+    conn.close()
+    return trend_df

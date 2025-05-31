@@ -6,3 +6,4 @@ pyodbc
 Authlib
 pandas
 streamlit-aggrid
+altair
