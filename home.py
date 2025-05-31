@@ -102,13 +102,7 @@ if not getattr(st.user, "is_logged_in", False):
     with col1:
         st.markdown('<div style="margin-bottom: 32px;"></div>', unsafe_allow_html=True)
         if st.button("🔐 Login With Google", key="login_btn", use_container_width=True):
-            user = st.login(
-                client_id=client_id,
-                client_secret=client_secret,
-                redirect_uri=redirect_uri,
-                server_metadata_url=server_metadata_url,
-                cookie_secret=cookie_secret
-            )
+            user = st.login()
         st.stop()
 
 
