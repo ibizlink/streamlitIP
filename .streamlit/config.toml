@@ -2,12 +2,12 @@
 files = ["/home/site/wwwroot/.streamlit/secrets.toml"]
 
 [theme]
-primaryColor="#4CAF50"
-backgroundColor="#ffffff"
-secondaryBackgroundColor="#f0f2f6"
-textColor="#262730"
-font="sans serif"
-base="dark"
+primaryColor = "#4CAF50"
+backgroundColor = "#262730"
+secondaryBackgroundColor = "#1A1A1A"
+textColor = "#FFFFFF"
+font = "sans serif"
+base = "dark"
 
 [ui]
 hideSidebarNav = true       # ✅ 페이지 목록 숨기기
