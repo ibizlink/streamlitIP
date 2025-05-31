@@ -76,7 +76,7 @@ if not getattr(st.user, "is_logged_in", False):
         Need help? Check out our [User Guide](https://seocoglobal.com) for step-by-step instructions.
         """
     )
-
+    st.write(st.secrets["auth"])
     col1, col2 = st.columns([1,1])
     with col1:
         st.markdown('<div style="margin-bottom: 32px;"></div>', unsafe_allow_html=True)
