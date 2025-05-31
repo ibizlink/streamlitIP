@@ -4,26 +4,10 @@ import pyodbc
 import pandas as pd
 
 # Get credentials from secrets.toml
-
-def get_secret(env_key, secrets_section=None, secrets_key=None):
-    value = os.environ.get(env_key)
-    if value:
-        return value
-    try:
-        if secrets_section and secrets_key:
-            return st.secrets[secrets_section][secrets_key]
-        elif secrets_section:
-            return st.secrets[secrets_section]
-        else:
-            return st.secrets[env_key]
-    except Exception:
-        return None
-
-# 데이터베이스 접속 정보 불러오기
-server   = get_secret("SQL_SERVER", "database", "SQL_SERVER")
-database = get_secret("SQL_DB",     "database", "SQL_DB")
-username = get_secret("SQL_UID",    "database", "SQL_UID")
-password = get_secret("SQL_PWD",    "database", "SQL_PWD")
+server = st.secrets["database"]["SQL_SERVER"]
+database = st.secrets["database"]["SQL_DB"]
+username = st.secrets["database"]["SQL_UID"]
+password = st.secrets["database"]["SQL_PWD"]
 
 
 def get_hub_connection():

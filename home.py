@@ -4,27 +4,6 @@ from utils.db import fetch_domains
 from streamlit_js_eval import streamlit_js_eval
 import os
 
-def get_secret(env_key, secrets_section=None, secrets_key=None):
-    value = os.environ.get(env_key)
-    if value:
-        return value
-    try:
-        import streamlit as st
-        if secrets_section and secrets_key:
-            return st.secrets[secrets_section][secrets_key]
-        elif secrets_section:
-            return st.secrets[secrets_section]
-        else:
-            return st.secrets[env_key]
-    except Exception:
-        return None
-
-redirect_uri        = get_secret("AUTH_REDIRECT_URI",        "auth", "redirect_uri")
-cookie_secret       = get_secret("AUTH_COOKIE_SECRET",       "auth", "cookie_secret")
-client_id           = get_secret("AUTH_CLIENT_ID",           "auth", "client_id")
-client_secret       = get_secret("AUTH_CLIENT_SECRET",       "auth", "client_secret")
-server_metadata_url = get_secret("AUTH_SERVER_METADATA_URL", "auth", "server_metadata_url")
-
 # --- Page Config ---
 st.set_page_config(
     page_title="BizLink Intelligence",
