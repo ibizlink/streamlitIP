@@ -55,7 +55,7 @@ if not getattr(st.user, "is_logged_in", False):
         """
         <div style='display: flex; align-items: center; gap: 10px;'>
             <span style='font-size: 2.2em;'>💡</span>
-            <span style='font-size: 2.2em; font-weight: bold;'>Intelligence Portal</span>
+            <span style='font-size: 2.2em; font-weight: bold;'>BizLink Intelligence Portal</span>
         </div>
         """,
         unsafe_allow_html=True
@@ -125,11 +125,11 @@ col1, col2, col3 = st.columns(3)
 with col1:
     if st.button("Sales Report", key="sales_report_btn", use_container_width=True):
         st.switch_page("pages/salesreport.py")
-with col2:
-    if st.button("Date Range", key="reports_btn", use_container_width=True):
-        st.switch_page("pages/reports.py")
-with col3:
-    if st.button("Settings", key="settings_btn", use_container_width=True):
-        st.switch_page("pages/settings.py")
+#with col2:
+    # if st.button("Date Range", key="reports_btn", use_container_width=True):
+    #     st.switch_page("pages/reports.py")
+#with col3:
+    # if st.button("Settings", key="settings_btn", use_container_width=True):
+    #     st.switch_page("pages/settings.py")
 
 
